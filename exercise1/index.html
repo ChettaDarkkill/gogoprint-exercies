@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>exercise1</title>
+        <script src="jquery-2.2.4.js"></script>
+    </head>
+    <body>
+        ใบละ 1000 บาท คงเหลือ : <span id = "thousand">99</span> ใบ <br/>
+        ใบละ 500 บาท คงเหลือ : <span id = "5_hundred" >30</span> ใบ <br/>
+        ใบละ 100 บาท คงเหลือ : <span id ="1_hundred">300</span> ใบ <br/>
+        <input id = "amount" type="number">&nbsp;<button onclick="calculate()" type="button">คำนวน</button>
+    </body>
+</html>
+<script>
+    
+    function getAmount(amt, hund, unit, sub_unit) {
+        if(amt <= parseInt((hund * 100)/unit)) { 
+            u = amt;
+            hund = ( ( u * unit ) / 100 );
+        } else {
+            u = parseInt(hund / sub_unit);
+            hund =  u*sub_unit;
+        }
+        var obj = {
+            u:u,
+            hund:hund
+        }
+        return obj;
+    }
+    function calculate() {
+        
+        var amount_a = parseInt($("#thousand").text());
+        var amount_b = parseInt($("#5_hundred").text());
+        var amount_c = parseInt($("#1_hundred").text());
+        var amount = parseInt($("#amount").val());
+        
+        var a = 0;
+        var b = 0;
+        var c = 0;
+
+        var hundred = amount / 100;
+        if(amount_a*1000+amount_b*500+amount_c*100 < amount) {
+            alert('ยอดเงินในตู้คงเหลือไม่พอ');
+            return false;
+        } else {
+            if(amount < 20000) {
+                if(amount % 100 == 0 ) {
+                    //case thousand
+                    if(hundred >= 10 && amount_a != 0) {
+                        var obj = getAmount(amount_a, hundred, 1000,10);
+                        a = obj.u;
+                        hundred -= obj.hund;
+                    }
+                    //case 5 hundred
+                    if(hundred >= 5 && amount_b != 0) {
+                        var obj = getAmount(amount_b, hundred, 500, 5);
+                        b = obj.u;
+                        hundred -= obj.hund;
+                    }
+                    //case 1 hundred
+                    if(hundred <=  amount_c) {    
+                        c = hundred;
+                    } else {
+                        alert('แบ้ง 100 บาท ไม่พอ');
+                        return false;
+                    }
+
+                    //update money
+                    $("#thousand").text(amount_a - a);
+                    $("#5_hundred").text(amount_b - b);
+                    $("#1_hundred").text(amount_c - hundred);
+
+                    //show money
+                    alert("ใบละ 1000 บาท  :" + a + " ใบ\n ใบละ 500 บาท :" + b + " ใบ\n ใบละ 100 บาท : " + c + "ใบ");
+                    return false;
+                } else {
+                    alert('กรุณากรอกตัวเลขให้ถูกต้อง');
+                    return false;
+                }
+            } else {
+                alert('ถอนเงินได้ไม่เกิน 20,000 บาท');
+                return false;
+            }
+        }
+    }
+
+</script>
